@@ -102,6 +102,6 @@ locals {
   }
 
   # NOTE: non_public_route_table_ids (rt-key => route table ID) references
-  # aws_route_table.private / .database / .intra and is added with those
-  # resources in checklist item D (routing.tf / endpoints.tf).
+  # aws_route_table.private / .database / .intra and is defined in
+  # endpoints.tf next to its only consumer.
 }
