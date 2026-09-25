@@ -300,7 +300,7 @@ run "test_full_features" {
 
   # 42
   assert {
-    condition     = output.azs == ["us-east-1a", "us-east-1b", "us-east-1c"]
+    condition     = output.azs == tolist(["us-east-1a", "us-east-1b", "us-east-1c"])
     error_message = "Output azs must be the sorted, distinct AZs used by any subnet."
   }
 
