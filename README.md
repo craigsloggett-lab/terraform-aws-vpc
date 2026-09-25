@@ -118,3 +118,51 @@ module "vpc" {
 | <a name="output_vpc_cidr_block"></a> [vpc\_cidr\_block](#output\_vpc\_cidr\_block) | IPv4 CIDR block of the VPC. |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | ID of the VPC. |
 <!-- END_TF_DOCS -->
+
+## Operational notes
+
+A full, runnable configuration (including a correctly scoped KMS key) is in [`examples/complete`](examples/complete).
+
+### KMS key policy for `kms_key_id`
+
+When `kms_key_id` is set, the key policy must let CloudWatch Logs use the key for this VPC's flow log group only:
+
+```hcl
+statement {
+  sid       = "AllowCloudWatchLogsFlowLogGroup"
+  actions   = ["kms:Encrypt*", "kms:Decrypt*", "kms:ReEncrypt*", "kms:GenerateDataKey*", "kms:Describe*"]
+  resources = ["*"]
+
+  principals {
+    type        = "Service"
+    identifiers = ["logs.<region>.amazonaws.com"]
+  }
+
+  condition {
+    test     = "ArnEquals"
+    variable = "kms:EncryptionContext:aws:logs:arn"
+    values   = ["arn:<partition>:logs:<region>:<account-id>:log-group:/aws/vpc-flow-logs/<name>"]
+  }
+}
+```
+
+If this statement is missing, creating the log group fails.
+
+### Deploying principal permissions
+
+The principal that runs Terraform needs `iam:PassRole` on the flow log role (`flow_log_iam_role_arn`) to create the flow log, in addition to the usual EC2, IAM and CloudWatch Logs permissions.
+
+### NAT gateway placement
+
+- With the default `single_nat_gateway = false`, each AZ that has private subnets gets one NAT gateway. It goes in the public subnet in that AZ whose **key sorts first lexically**. Every private subnet AZ must have a public subnet in the same AZ.
+- If you add a public subnet whose key sorts earlier in an AZ that already has a NAT (for example `alpha-a` next to `web-a`), Terraform **replaces that AZ's NAT gateway and its EIP**. The public egress IP changes.
+- With `single_nat_gateway = true`, one NAT gateway goes in the first sorted public AZ and every private route table routes through it. This costs less but gives up AZ resilience: an outage in that AZ removes egress for all private subnets. Each private AZ keeps its own route table, so switching modes updates routes in place.
+
+### Known compliance findings (by design)
+
+- **Default network ACL is not managed.** The AWS default NACL allows all traffic, so this VPC fails CIS AWS Foundations 5.1 / Security Hub EC2.21. Enforce it with account-level controls until the module manages it (planned follow-up).
+- **Log group encryption.** With `kms_key_id = null`, the flow log group uses CloudWatch Logs service-managed encryption and fails the AWS Config `cloudwatch-log-group-encrypted` rule. Set `kms_key_id` to a customer-managed key to pass it.
+
+### Provider version constraint
+
+The AWS provider constraint `>= 5.0, < 6.0` is deliberate. Provider 6.x deprecates attributes this module uses (for example `data.aws_region.name`), so 6.x support will come in a separately tested release.
