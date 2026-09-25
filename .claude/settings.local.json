@@ -1,0 +1,15 @@
+{
+  "enabledMcpjsonServers": [
+    "aws-documentation-mcp-server",
+    "terraform"
+  ],
+  "permissions": {
+    "allow": [
+      "Bash([ -f \"$LINK\" ])",
+      "Bash(bash /plugin/scripts/link-foundations.sh)",
+      "Bash(true)",
+      "Bash(bash .foundations/scripts/bash/validate-env.sh --json)",
+      "Bash(ls -la)"
+    ]
+  }
+}
