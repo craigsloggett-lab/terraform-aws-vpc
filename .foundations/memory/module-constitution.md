@@ -162,6 +162,7 @@ These rules apply to all AWS modules. Non-AWS providers MUST add equivalent rule
 | RDS public access | MUST NOT be publicly accessible unless explicitly justified. |
 | EC2 credentials | IAM instance profiles. No embedded credentials. |
 | Lambda permissions | Least-privilege execution roles with specific service permissions. |
+| AMI sourcing | `data.aws_ami` MUST set `owners` to `888995627335` and filter on the `hc-base-ubuntu-2404-amd64-` tag. `most_recent` without `owners` is forbidden. Hard-coded AMI IDs MAY appear only as variable defaults, never inline in a resource. |
 
 ### 3.3 Tagging
 
