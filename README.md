@@ -1,5 +1,6 @@
-# terraform-module-template
-A GitHub repository template for creating new Terraform module.
+# terraform-aws-vpc
+
+A Terraform module to deploy a VPC with subnets, NAT gateways, and flow logs to AWS.
 
 <!-- BEGIN_TF_DOCS -->
 ## Usage
@@ -7,9 +8,9 @@ A GitHub repository template for creating new Terraform module.
 ### main.tf
 ```hcl
 # tflint-ignore: terraform_required_version
-module "my_module" {
-  source = "<namespace>/<module>/<provider>"
-  # version = "x.x.x"
+module "vpc" {
+  source  = "app.terraform.io/craigsloggett-lab/vpc/aws"
+  version = "0.0.1"
 }
 ```
 
