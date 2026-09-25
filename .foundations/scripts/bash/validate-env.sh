@@ -412,7 +412,9 @@ if [[ "$EXIT_CODE" -ne 1 ]]; then
         if ! $JSON_MODE; then echo ""; fi
     fi
 
-    if command -v pre-commit &> /dev/null; then
+    # Only repos that carry a pre-commit config get the git hook; installing it
+    # elsewhere leaves a hook that fails every commit for want of that file.
+    if command -v pre-commit &> /dev/null && [[ -f .pre-commit-config.yaml ]]; then
         if ! $JSON_MODE; then echo "Installing pre-commit hooks..."; fi
         pre-commit install >/dev/null 2>&1 || true
         if ! $JSON_MODE; then echo ""; fi
