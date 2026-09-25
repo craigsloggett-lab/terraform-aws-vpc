@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "flow_logs_assume" {
       values = [format(
         "arn:%s:ec2:%s:%s:vpc-flow-log/*",
         data.aws_partition.current.partition,
-        data.aws_region.current.name,
+        data.aws_region.current.region,
         data.aws_caller_identity.current.account_id,
       )]
     }
@@ -78,12 +78,12 @@ resource "aws_cloudwatch_log_group" "flow_logs" {
 resource "aws_iam_role" "flow_logs" {
   count = var.enable_flow_logs ? 1 : 0
 
-  name               = "${var.name}-flow-logs-${data.aws_region.current.name}"
+  name               = "${var.name}-flow-logs-${data.aws_region.current.region}"
   description        = "Allows VPC Flow Logs to publish ${var.name} flow logs to CloudWatch Logs"
   assume_role_policy = data.aws_iam_policy_document.flow_logs_assume[0].json
 
   tags = merge(local.common_tags, {
-    Name = "${var.name}-flow-logs-${data.aws_region.current.name}"
+    Name = "${var.name}-flow-logs-${data.aws_region.current.region}"
   })
 }
 

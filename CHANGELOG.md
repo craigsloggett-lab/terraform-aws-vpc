@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING:** Requires `hashicorp/aws` `>= 6.0, < 7.0` (was `>= 5.0, < 6.0`). Consumers must allow the 6.x provider.
+- Region lookups use the `aws_region` data source's `region` attribute in place of the deprecated `name`. Resolved values (endpoint service names, flow log IAM role name and trust policy, flow log group ARN) do not change.
+- `examples/complete` pins `hashicorp/aws` `6.66.0`.
+
 ### Added
 
 - Initial release of the AWS VPC module (`hashicorp/aws` `>= 5.0, < 6.0`, Terraform `>= 1.14`).

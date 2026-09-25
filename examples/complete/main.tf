@@ -7,7 +7,7 @@ data "aws_region" "current" {}
 locals {
   account_id = data.aws_caller_identity.current.account_id
   partition  = data.aws_partition.current.partition
-  region     = data.aws_region.current.name # 5.x attribute
+  region     = data.aws_region.current.region
 
   # Deterministic flow log group ARN, matching the module's naming rule, so the
   # key policy can be written before the log group exists.

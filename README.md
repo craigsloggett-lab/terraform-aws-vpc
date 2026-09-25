@@ -19,13 +19,13 @@ module "vpc" {
 | Name | Version |
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.14 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0, < 6.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0, < 7.0 |
 
 ## Providers
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.0, < 6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0, < 7.0 |
 
 ## Inputs
 
@@ -165,4 +165,4 @@ The principal that runs Terraform needs `iam:PassRole` on the flow log role (`fl
 
 ### Provider version constraint
 
-The AWS provider constraint `>= 5.0, < 6.0` is deliberate. Provider 6.x deprecates attributes this module uses (for example `data.aws_region.name`), so 6.x support will come in a separately tested release.
+The module requires AWS provider `>= 6.0, < 7.0`. It reads the current region from the `aws_region` data source's `region` attribute, which does not exist in 5.x. Pin the previous module release if you cannot yet move to provider 6.x.

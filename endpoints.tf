@@ -17,7 +17,7 @@ resource "aws_vpc_endpoint" "gateway" {
 
   vpc_id            = aws_vpc.this.id
   vpc_endpoint_type = "Gateway"
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.${each.key}"
 
   tags = merge(local.common_tags, {
     Name = "${var.name}-${each.key}"
