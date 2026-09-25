@@ -74,7 +74,7 @@ locals {
   flow_log_group_arn = format(
     "arn:%s:logs:%s:%s:log-group:%s",
     data.aws_partition.current.partition,
-    data.aws_region.current.name,
+    data.aws_region.current.region,
     data.aws_caller_identity.current.account_id,
     local.flow_log_group_name,
   )

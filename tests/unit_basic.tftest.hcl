@@ -6,7 +6,7 @@ mock_provider "aws" {
     defaults = { json = "{\"Version\":\"2012-10-17\",\"Statement\":[]}" } # must be valid JSON (P1)
   }
   mock_data "aws_region" {
-    defaults = { name = "us-east-1" } # 5.x attribute
+    defaults = { region = "us-east-1" }
   }
   mock_data "aws_caller_identity" {
     defaults = { account_id = "123456789012" }
